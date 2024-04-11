@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/surajNirala/web/handlers"
 )
 
 func add(a, b int) int {
@@ -94,6 +95,7 @@ func main() {
 	router := mux.NewRouter()
 	// Define your API routes
 	router.HandleFunc("/", HomeHandler).Methods("GET")
+	router.HandleFunc("/get-user", handlers.GetUser).Methods("GET")
 
 	// Start the HTTP server
 	log.Fatal(http.ListenAndServe(":8080", router))
