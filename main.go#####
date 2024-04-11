@@ -1,0 +1,93 @@
+package main
+
+import (
+	"fmt"
+	"image"
+	"strings"
+
+	imageprocessing "github.com/surajNirala/web/image_processing"
+)
+
+var Images []string = []string{
+	"images/1.jpeg",
+	"images/1.jpg",
+	"images/2.jpg",
+	// "images/1.webp",
+}
+
+type Job struct {
+	InputPath string
+	Outpath   string
+	Image     image.Image
+}
+
+func main() {
+
+	channel1 := loadImage(Images)
+	// fmt.Println("channel1:", channel1)
+	channel2 := resizeImageData(channel1)
+
+	channel3 := convertGrayScale(channel2)
+	result := saveImage(channel3)
+	fmt.Println("result:", result)
+
+	for item := range result {
+		if item {
+			fmt.Println("Success!")
+		} else {
+			fmt.Println("Failed!")
+		}
+	}
+}
+
+func loadImage(images []string) <-chan Job {
+	out := make(chan Job)
+	go func() {
+		for _, p := range images {
+			job := Job{
+				InputPath: p,
+				Outpath:   strings.Replace(p, "images/", "images/output/", 1),
+			}
+			job.Image = imageprocessing.ReadImage(p)
+			out <- job
+		}
+		close(out)
+	}()
+	return out
+}
+
+func resizeImageData(input <-chan Job) <-chan Job {
+	out := make(chan Job)
+	go func() {
+		for job := range input {
+			job.Image = imageprocessing.Resize1(job.Image)
+			out <- job
+		}
+		close(out)
+	}()
+	return out
+}
+
+func convertGrayScale(input <-chan Job) <-chan Job {
+	out := make(chan Job)
+	go func() {
+		for job := range input {
+			job.Image = imageprocessing.GrayScale(job.Image)
+			out <- job
+		}
+		close(out)
+	}()
+	return out
+}
+
+func saveImage(input <-chan Job) <-chan bool {
+	out := make(chan bool)
+	go func() {
+		for job := range input {
+			imageprocessing.WriteImage(job.Outpath, job.Image)
+			out <- true
+		}
+		close(out)
+	}()
+	return out
+}

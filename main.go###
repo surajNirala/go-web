@@ -1,0 +1,176 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"sort"
+	"strconv"
+	"sync"
+)
+
+type Voice interface {
+	Speak() string
+}
+
+type Cat struct {
+}
+type Dog struct {
+}
+
+func (c Cat) Speak() string {
+	return "meow"
+}
+func (d Dog) Speak() string {
+	return "woof"
+}
+
+func getStatusCode(website string) {
+	res, err := http.Get(website)
+
+	if err != nil {
+		fmt.Println("Oops Somenthing went wrong.")
+	}
+	mut.Lock()
+	info = append(info, website)
+	mut.Unlock()
+	fmt.Printf("%d code, message %v and website is : %v \n", res.StatusCode, res.Status, website)
+	wg.Done()
+}
+
+var info = []string{"test"}
+var wg sync.WaitGroup
+var mut sync.Mutex
+
+// 28-03-2024
+func arrSort() map[string]string {
+	var arr = make(map[string]string)
+	arr["1"] = "test1"
+	arr["2"] = "test2"
+	arr["5"] = "test5"
+	arr["10"] = "test10"
+	arr["9"] = "test9"
+	arr["3"] = "test3"
+	arr["4"] = "test4"
+	return arr
+	// fmt.Println("Before Sorting: ", arr)
+}
+func sortMapByKey(arrData map[string]string) []int {
+	// keys := []int{}
+	keys := make([]int, 0, len(arrData))
+	for key, _ := range arrData {
+		intKey, err := strconv.Atoi(key)
+		if err != nil {
+			panic(err) // Handle error if conversion fails
+		}
+		keys = append(keys, intKey)
+	}
+	return keys
+}
+
+func ascOrder(arrData []int) {
+	sort.Slice(arrData, func(i, j int) bool {
+		return arrData[i] < arrData[j]
+	})
+	fmt.Println("Sorted sortKey (ascending):", arrData)
+}
+
+func descOrder(arrData []int) {
+	sort.Slice(arrData, func(i int, j int) bool {
+		return arrData[i] > arrData[j]
+	})
+	fmt.Println("Sorted sortKey (descending):", arrData)
+}
+
+type constant int
+type unconstant string
+
+func main() {
+
+	var a constant = 10
+	var a1 unconstant = "srj"
+	fmt.Println("a => ", a)
+	fmt.Println("a1 => ", a1)
+	arrData := arrSort()
+	sortKey := sortMapByKey(arrData)
+	fmt.Println("Key-Value Pair", arrData)
+	fmt.Println("Keys", sortKey)
+	// sort.Strings(sortKey)
+	// fmt.Println("Sorted-Keys", sortKey)
+	ascOrder(sortKey)
+	descOrder(sortKey)
+	// fmt.Println("Sorted sortKey (descending):", sortKey)
+
+	/* websites := []string{
+		"https://thecodbuddy.com",
+		"https://github.com",
+		"https://fb.com",
+		"https://twitter.com/",
+		"https://linkedin.com",
+		"https://go.org",
+	}
+
+	for _, item := range websites {
+
+		go getStatusCode(item) // Calling the function without passing an argument
+		wg.Add(1)
+	}
+	wg.Wait()
+	fmt.Println(info) */
+
+	/* var x int = 10
+	var ptr *int
+	// ptr = &x
+	// *ptr = 20
+	ptr = &x
+	*ptr = 20
+	fmt.Println("X value : ", x)
+	fmt.Println("X md : ", &x)
+	fmt.Println("Ptr md : ", ptr)
+	fmt.Println("Ptr value : ", *ptr) */
+
+	/* defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
+
+	fmt.Println("Start of main")
+
+	// Simulate a panic
+	panic("something went wrong") */
+
+	/*
+		defer fmt.Println("Hello")
+		fmt.Println("World") */
+
+	/* swap(10, 20) */
+
+	/* test := .3
+	fmt.Printf("Type %T", test) */
+
+	/* cat := Cat{}
+	dog := Dog{}
+	voice := []Voice{cat, dog}
+	for _, value := range voice {
+		fmt.Println("speech: ", value.Speak())
+	} */
+}
+
+func filledChannelData(ch chan string) {
+	for i := 0; i < 5; i++ {
+		ch <- "Data Filling " + strconv.Itoa(i)
+	}
+	close(ch)
+}
+
+func channelWithChannel(ch chan int) {
+	data := 100 * <-ch
+	println(data)
+}
+
+func swap(a int, b int) {
+	a = a + b
+	b = a - b
+	a = a - b
+	fmt.Println("A =", a, "B =", b)
+}

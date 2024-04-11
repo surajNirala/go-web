@@ -1,0 +1,56 @@
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	//Declear Channel
+	//1) Buffered Channle
+	// ch := make(chan string, 10)
+	// unbuffered Channel
+	// unch := make(chan string)
+	simpleChannel()
+	// BuildRace()
+
+}
+
+func BuildRace() {
+	car1 := "Ferrari"
+	car2 := "Lamborghini"
+
+	// Create a Goroutine for each car
+	go race(car1)
+	go race(car2)
+
+	// Wait for the race to finish
+	time.Sleep(5 * time.Second)
+
+	fmt.Println("Race over!")
+
+}
+
+func race(car string) {
+	for i := 0; i < 5; i++ {
+		fmt.Println(car, "is racing...")
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func simpleChannel() {
+	ch1 := make(chan string)
+	// c := "swsw"
+	// go getChannel(ch1)
+	// value := <-ch1
+	// go func() {
+	// 	ch1 <- 12
+	// }()
+	// ch1 <- 23
+	fmt.Printf("type %T\n", ch1)
+	// fmt.Println(value)
+}
+
+func getChannel(ch1 chan int) {
+	ch1 <- 20
+}
